@@ -17,6 +17,7 @@ module Fluent
     config_param :key, :string, :default => nil
     config_param :persistent, :bool, :default => false
     config_param :format_json, :bool, :default => false
+    config_param :tag_as_key, :bool, :default => false
 
     def initialize
       super
@@ -26,7 +27,7 @@ module Fluent
     def configure(conf)
       super
       @conf = conf
-      unless @host && @exchange && @key
+      unless @host && @exchange && (@key || @tag_as_key)
         raise ConfigError, "'host', 'exchange' and 'key' must be all specified."
       end
       @bunny = Bunny.new(:host => @host, :port => @port, :vhost => @vhost,
@@ -47,6 +48,9 @@ module Fluent
     end
 
     def format(tag, time, record)
+      if @tag_as_key
+        @key = tag
+      end
       record.to_msgpack
     end
 
