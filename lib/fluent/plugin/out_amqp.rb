@@ -16,7 +16,7 @@ module Fluent
     config_param :auto_delete, :bool, :default => false
     config_param :key, :string, :default => nil
     config_param :persistent, :bool, :default => false
-    config_param :format_json, :default => false
+    config_param :format_json, :bool, :default => false
 
     def initialize
       super
