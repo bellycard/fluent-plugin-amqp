@@ -16,6 +16,7 @@ module Fluent
     config_param :auto_delete, :bool, :default => false
     config_param :key, :string, :default => nil
     config_param :persistent, :bool, :default => false
+    config_param :format_json, :default => false
 
     def initialize
       super
@@ -51,6 +52,9 @@ module Fluent
 
     def write(chunk)
       chunk.msgpack_each do |data|
+        if @format_json
+          data = data.to_json
+        end
         @exch.publish(data, :key => @key, :persistent => @persistent)
       end
     end
