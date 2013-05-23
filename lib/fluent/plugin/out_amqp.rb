@@ -56,10 +56,12 @@ module Fluent
 
     def write(chunk)
       chunk.msgpack_each do |data|
+        content_type = "application/octet-stream"
         if @format_json
           data = data.to_json
+          content_type = "application/json"
         end
-        @exch.publish(data, :key => @key, :persistent => @persistent)
+        @exch.publish(data, :key => @key, :persistent => @persistent, :content_type => content_type)
       end
     end
 
